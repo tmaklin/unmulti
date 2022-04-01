@@ -25,6 +25,7 @@
 #include "unmulti.hpp"
 
 #include "cxxargs.hpp"
+#include "cxxio.hpp"
 
 #include "version.h"
 
