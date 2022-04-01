@@ -1,4 +1,4 @@
-// unmulti Split a multifasta file into many fasta files containing a single sequence. 
+// unmulti: Split a multifasta file into many fasta files containing a single sequence. 
 // https://github.com/tmaklin/unmulti
 //
 // MIT License
