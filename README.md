@@ -55,12 +55,26 @@ format depending on what was supported on the machine that unmulti was
 compiled on. Adding the `--compress` toggle will compress the output
 files using zlib.
 
+Adding the `-t number_to_sequence.tsv` argument will write a table
+linking the output filenames to their sequence names to the supplied
+argument. In the example above, running `unmulti -f in.fasta -o
+number_to_sequence.tsv` would produce the following file
+
+```
+0	seq_1
+1	seq_2
+```
+
+If the `-o` option is used then the output from `-t` will be in the
+directory supplied via `-o`.
+
 ### Accepted flags/parameters
 unmulti accepts the following flags/parameters:
 
 ```
 -f            Input multifasta.
 -o            Output directory (default: working directory)
+-t	          Write a table linking the output filenames to sequence names to the argument filename.
 --compress    Compress the output files with zlib (default: false)
 ```
 

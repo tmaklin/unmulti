@@ -29,6 +29,7 @@
 #include <iostream>
 #include <exception>
 #include <cstdint>
+#include <utility>
 
 #include "cxxargs.hpp"
 #include "cxxio.hpp"
@@ -43,6 +44,8 @@ bool CmdOptionPresent(char **begin, char **end, const std::string &option) {
 void parse_args(int argc, char* argv[], cxxargs::Arguments &args) {
     args.add_short_argument<std::string>('f', "Input multifasta.");
     args.add_short_argument<std::string>('o', "Output directory (default: working directory)", ".");
+    args.add_short_argument<std::string>('t', "Write a table linking the output filenames to sequence names to the argument filename.");
+    args.set_not_required('t');
     args.add_long_argument<bool>("compress", "Compress the output files with zlib (default: false)", false);
 
     if (!CmdOptionPresent(argv, argv+argc, "--help")) {
@@ -87,6 +90,7 @@ int main(int argc, char* argv[]) {
     // Process the input
     std::string line;
     uint32_t seq_number = 0;
+    std::vector<std::pair<uint32_t, std::string>> seq_names;
     cxxio::Out out;
     while(std::getline(in.stream(), line)) {
 	if (line.at(0) == '>') {
@@ -100,6 +104,7 @@ int main(int argc, char* argv[]) {
 	    } else {
 		out.open(outfile);
 	    }
+	    seq_names.emplace_back(std::make_pair(seq_number, line.substr(1)));
 	    ++seq_number;
 	}
 	out.stream() << line << '\n';
@@ -107,5 +112,14 @@ int main(int argc, char* argv[]) {
     in.close();
     out.close();
 
+    if (unmulti::CmdOptionPresent(argv, argv+argc, "-t")) {
+	cxxio::Out out;
+	out.open(args.value<std::string>('o') + '/' + args.value<std::string>('t'));
+	for (uint32_t i = 0; i < seq_number; ++i) {
+	    out << seq_names[i].first << '\t' << seq_names[i].second << (i == seq_number - 1 ? "" : "\n");
+	}
+	out.stream() << std::endl;
+	out.close();
+    }
     return 0;
 }
