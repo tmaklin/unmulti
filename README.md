@@ -74,7 +74,7 @@ unmulti accepts the following flags/parameters:
 ```
 -f            Input multifasta.
 -o            Output directory (default: working directory)
--t	          Write a table linking the output filenames to sequence names to the argument filename.
+-t            Write a table linking the output filenames to sequence names to the argument filename.
 --compress    Compress the output files with zlib (default: false)
 ```
 
