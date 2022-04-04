@@ -43,6 +43,7 @@ bool CmdOptionPresent(char **begin, char **end, const std::string &option) {
 void parse_args(int argc, char* argv[], cxxargs::Arguments &args) {
     args.add_short_argument<std::string>('f', "Input multifasta.");
     args.add_short_argument<std::string>('o', "Output directory (default: working directory)", ".");
+    args.add_long_argument<bool>("compress", "Compress the output files with zlib (default: false)", false);
 
     if (!CmdOptionPresent(argv, argv+argc, "--help")) {
 	args.parse(argc, argv);
@@ -92,7 +93,13 @@ int main(int argc, char* argv[]) {
 	    if (seq_number > 0) {
 		out.close(); // Flush only if something has been written.
 	    }
-	    out.open(args.value<std::string>('o') + '/' + std::to_string(seq_number) + ".fasta");
+	    std::string outfile = args.value<std::string>('o') + '/' + std::to_string(seq_number) + ".fasta"
+		+ (args.value<bool>("compress") ? ".gz" : "");
+	    if (args.value<bool>("compress")) {
+		out.open_compressed(outfile);
+	    } else {
+		out.open(outfile);
+	    }
 	    ++seq_number;
 	}
 	out.stream() << line << '\n';

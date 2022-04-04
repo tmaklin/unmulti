@@ -50,12 +50,18 @@ and
 GGGTAC
 ```
 
+The input file can be supplied compressed in the zlib/libbz2/liblzma
+format depending on what was supported on the machine that unmulti was
+compiled on. Adding the `--compress` toggle will compress the output
+files using zlib.
+
 ### Accepted flags/parameters
 unmulti accepts the following flags/parameters:
 
 ```
--f    Input multifasta.
--o    Output directory (default: working directory)
+-f            Input multifasta.
+-o            Output directory (default: working directory)
+--compress    Compress the output files with zlib (default: false)
 ```
 
 ## License

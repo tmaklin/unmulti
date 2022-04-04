@@ -39,7 +39,27 @@ else()
 endif()
 string(TIMESTAMP _BUILD_TIMESTAMP)
 
-## Check dependencies and download them if not found
+## Libraries and executables
+add_executable(unmulti
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/unmulti.cpp)
+
+# Check dependencies and download them if not found
+## Check supported compression types
+find_package(BZip2)
+if (BZIP2_FOUND)
+  include_directories(${BZIP2_INCLUDE_DIRS})
+  target_link_libraries(unmulti ${BZIP2_LIBRARIES})
+endif()
+find_package(LibLZMA)
+if (LIBLZMA_FOUND)
+  include_directories(${LIBLZMA_INCLUDE_DIRS})
+  target_link_libraries(unmulti ${LIBLZMA_LIBRARIES})
+endif()
+find_package(ZLIB)
+if (ZLIB_FOUND)
+  include_directories(${ZLIB_INCLUDE_DIRS})
+  target_link_libraries(unmulti ${ZLIB_LIBRARIES})
+endif()
 
 ## bxzstr
 if (DEFINED CMAKE_BXZSTR_HEADERS)
@@ -110,7 +130,3 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/version.h.in ${CMAKE_CURRENT_B
 ## Includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_BINARY_DIR}/include)
-
-## Libraries and executables
-add_executable(unmulti
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/unmulti.cpp)
