@@ -41,6 +41,7 @@ string(TIMESTAMP _BUILD_TIMESTAMP)
 
 ## Libraries and executables
 add_executable(unmulti
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/split.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/unmulti.cpp)
 
 # Check dependencies and download them if not found
