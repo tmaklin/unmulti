@@ -60,20 +60,22 @@ std::vector<std::pair<uint32_t, std::string>> Split(const std::string &outdir, c
     std::vector<std::pair<uint32_t, std::string>> seq_names;
     cxxio::Out out;
     while(std::getline(in.stream(), line)) {
-	if (line.at(0) == '>') {
-	    if (seq_number > 0) {
-		out.close(); // Flush only if something has been written.
+	if (!line.empty()) {
+	    if (line.at(0) == '>') {
+		if (seq_number > 0) {
+		    out.close(); // Flush only if something has been written.
+		}
+		std::string outfile = outdir + '/' + std::to_string(seq_number) + ".fasta" + (compress ? ".gz" : "");
+		if (compress) {
+		    out.open_compressed(outfile);
+		} else {
+		    out.open(outfile);
+		}
+		seq_names.emplace_back(std::make_pair(seq_number, line.substr(1)));
+		++seq_number;
 	    }
-	    std::string outfile = outdir + '/' + std::to_string(seq_number) + ".fasta" + (compress ? ".gz" : "");
-	    if (compress) {
-		out.open_compressed(outfile);
-	    } else {
-		out.open(outfile);
-	    }
-	    seq_names.emplace_back(std::make_pair(seq_number, line.substr(1)));
-	    ++seq_number;
+	    out.stream() << line << '\n';
 	}
-	out.stream() << line << '\n';
     }
     in.close();
     out.close();
