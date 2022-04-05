@@ -41,7 +41,7 @@ bool CmdOptionPresent(char **begin, char **end, const std::string &option) {
   return (std::find(begin, end, option) != end);
 }
 
-void parse_args(int argc, char* argv[], cxxargs::Arguments &args) {
+void ParseArgs(int argc, char* argv[], cxxargs::Arguments &args) {
     args.add_short_argument<std::string>('f', "Input multifasta.");
     args.add_short_argument<std::string>('o', "Output directory (default: working directory)", ".");
     args.add_short_argument<std::string>('t', "Write a table linking the output filenames to sequence names to the argument filename.");
@@ -52,6 +52,44 @@ void parse_args(int argc, char* argv[], cxxargs::Arguments &args) {
 	args.parse(argc, argv);
     }
 }
+
+std::vector<std::pair<uint32_t, std::string>> Split(const std::string &outdir, const bool compress, cxxio::In &in) {
+    // Process the input
+    std::string line;
+    uint32_t seq_number = 0;
+    std::vector<std::pair<uint32_t, std::string>> seq_names;
+    cxxio::Out out;
+    while(std::getline(in.stream(), line)) {
+	if (line.at(0) == '>') {
+	    if (seq_number > 0) {
+		out.close(); // Flush only if something has been written.
+	    }
+	    std::string outfile = outdir + '/' + std::to_string(seq_number) + ".fasta" + (compress ? ".gz" : "");
+	    if (compress) {
+		out.open_compressed(outfile);
+	    } else {
+		out.open(outfile);
+	    }
+	    seq_names.emplace_back(std::make_pair(seq_number, line.substr(1)));
+	    ++seq_number;
+	}
+	out.stream() << line << '\n';
+    }
+    in.close();
+    out.close();
+    return seq_names;
+}
+
+void FileToSeq(const std::string &outdir, const std::string &outfile, const std::vector<std::pair<uint32_t, std::string>> &seq_names) {
+    cxxio::Out out;
+    uint32_t n_seqs = seq_names.size();
+    out.open(outdir + '/' + outfile);
+    for (uint32_t i = 0; i < n_seqs; ++i) {
+	out << seq_names[i].first << '\t' << seq_names[i].second << (i == n_seqs - 1 ? "" : "\n");
+    }
+    out.stream() << std::endl;
+    out.close();
+}
 }
 
 int main(int argc, char* argv[]) {
@@ -59,7 +97,7 @@ int main(int argc, char* argv[]) {
 
     // Parse input arguments.
     try {
-	unmulti::parse_args(argc, argv, args);
+	unmulti::ParseArgs(argc, argv, args);
 
 	if (unmulti::CmdOptionPresent(argv, argv+argc, "--help")) {
 	    std::cerr << "\n" + args.help() << '\n' << '\n';
@@ -87,39 +125,10 @@ int main(int argc, char* argv[]) {
 	return 1;
     }
 
-    // Process the input
-    std::string line;
-    uint32_t seq_number = 0;
-    std::vector<std::pair<uint32_t, std::string>> seq_names;
-    cxxio::Out out;
-    while(std::getline(in.stream(), line)) {
-	if (line.at(0) == '>') {
-	    if (seq_number > 0) {
-		out.close(); // Flush only if something has been written.
-	    }
-	    std::string outfile = args.value<std::string>('o') + '/' + std::to_string(seq_number) + ".fasta"
-		+ (args.value<bool>("compress") ? ".gz" : "");
-	    if (args.value<bool>("compress")) {
-		out.open_compressed(outfile);
-	    } else {
-		out.open(outfile);
-	    }
-	    seq_names.emplace_back(std::make_pair(seq_number, line.substr(1)));
-	    ++seq_number;
-	}
-	out.stream() << line << '\n';
-    }
-    in.close();
-    out.close();
+    const std::vector<std::pair<uint32_t, std::string>> &seq_names = unmulti::Split(args.value<std::string>('o'), args.value<bool>("--compress"), in);
 
     if (unmulti::CmdOptionPresent(argv, argv+argc, "-t")) {
-	cxxio::Out out;
-	out.open(args.value<std::string>('o') + '/' + args.value<std::string>('t'));
-	for (uint32_t i = 0; i < seq_number; ++i) {
-	    out << seq_names[i].first << '\t' << seq_names[i].second << (i == seq_number - 1 ? "" : "\n");
-	}
-	out.stream() << std::endl;
-	out.close();
+	unmulti::FileToSeq(args.value<std::string>('o'), args.value<std::string>('t'), seq_names);
     }
     return 0;
 }
