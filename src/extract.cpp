@@ -9,6 +9,8 @@ std::vector<std::pair<uint32_t, std::string>>Extract(const std::string &outdir, 
     for (auto val : outnames) {
 	outseqs.insert(val);
     }
+    uint32_t n_to_extract = outseqs.size();
+    uint32_t n_extracted = 0;
 
     // Process the input
     std::string line;
@@ -16,7 +18,7 @@ std::vector<std::pair<uint32_t, std::string>>Extract(const std::string &outdir, 
     std::vector<std::pair<uint32_t, std::string>> seq_names;
     cxxio::Out out;
     bool is_in_outnames = false;
-    while(std::getline(in.stream(), line)) {
+    while(std::getline(in.stream(), line) && (n_extracted <= n_to_extract)) {
 	if (!line.empty()) {
 	    if (line.at(0) == '>') {
 		if (seq_number > 0) {
@@ -24,8 +26,8 @@ std::vector<std::pair<uint32_t, std::string>>Extract(const std::string &outdir, 
 		}
 
 		const std::string &seq_name = line.substr(1);
-		// Only start
 		is_in_outnames = (outseqs.find(seq_name) != outseqs.end());
+		n_extracted += is_in_outnames;
 
 		if (is_in_outnames) {
 		    std::string outfile = outdir + '/' + std::to_string(seq_number) + ".fasta" + (compress ? ".gz" : "");
