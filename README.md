@@ -74,6 +74,21 @@ number_to_sequence.tsv` would produce the following file
 1	seq_2
 ```
 
+If your sequeunces begin with some other character than '>', the
+`--seq-start` option can be used to change the character. For example, running
+`unmulti -f in.fasta --seq-start @` would make unmulti compatible with
+a file in the following format
+
+```
+@read_1
+CGCCTAC
++
+GGFGGCD
+@read_2
+TGAGCCA
++
+FFGFG=G
+```
 
 ### Accepted flags/parameters
 unmulti accepts the following flags/parameters:
@@ -84,6 +99,7 @@ unmulti accepts the following flags/parameters:
 -t            Write a table linking the output filenames to sequence names to the argument filename.
 --compress    Compress the output files with zlib (default: false)
 --extract     Extract only the named sequence(s). Multiple sequences should be delimited by ','.
+--seq-start   Sequence begin character (default: '>')
 ```
 
 ## License

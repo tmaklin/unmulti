@@ -1,7 +1,7 @@
 #include "split.hpp"
 
 namespace unmulti {
-std::vector<std::pair<uint32_t, std::string>> Split(const std::string &outdir, const bool compress, cxxio::In &in) {
+std::vector<std::pair<uint32_t, std::string>> Split(const std::string &outdir, const bool compress, const char seq_start, cxxio::In &in) {
     // Process the input
     std::string line;
     uint32_t seq_number = 0;
@@ -9,7 +9,7 @@ std::vector<std::pair<uint32_t, std::string>> Split(const std::string &outdir, c
     cxxio::Out out;
     while(std::getline(in.stream(), line)) {
 	if (!line.empty()) {
-	    if (line.at(0) == '>') {
+	    if (line.at(0) == seq_start) {
 		if (seq_number > 0) {
 		    out.close(); // Flush only if something has been written.
 		}
@@ -22,7 +22,9 @@ std::vector<std::pair<uint32_t, std::string>> Split(const std::string &outdir, c
 		seq_names.emplace_back(std::make_pair(seq_number, line.substr(1)));
 		++seq_number;
 	    }
-	    out.stream() << line << '\n';
+	    if (seq_number > 0) {
+		out.stream() << line << '\n';
+	    }
 	}
     }
     in.close();

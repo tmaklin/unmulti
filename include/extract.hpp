@@ -9,7 +9,7 @@
 #include "cxxio.hpp"
 
 namespace unmulti {
-    std::vector<std::pair<uint32_t, std::string>>Extract(const std::string &outdir, const std::vector<std::string> &outnames, const bool compress, cxxio::In &in);
+    std::vector<std::pair<uint32_t, std::string>>Extract(const std::string &outdir, const std::vector<std::string> &outnames, const bool compress, const char seq_start, cxxio::In &in);
 }
 
 #endif

@@ -3,7 +3,7 @@
 #include <set>
 
 namespace unmulti {
-std::vector<std::pair<uint32_t, std::string>>Extract(const std::string &outdir, const std::vector<std::string> &outnames, const bool compress, cxxio::In &in) {
+std::vector<std::pair<uint32_t, std::string>>Extract(const std::string &outdir, const std::vector<std::string> &outnames, const bool compress, const char seq_start, cxxio::In &in) {
     // Hash the input names to check them quickly
     std::set<std::string> outseqs;
     for (auto val : outnames) {
@@ -20,7 +20,7 @@ std::vector<std::pair<uint32_t, std::string>>Extract(const std::string &outdir, 
     bool is_in_outnames = false;
     while(std::getline(in.stream(), line) && (n_extracted <= n_to_extract)) {
 	if (!line.empty()) {
-	    if (line.at(0) == '>') {
+	    if (line.at(0) == seq_start) {
 		if (seq_number > 0) {
 		    out.close(); // Flush only if something has been written.
 		}
