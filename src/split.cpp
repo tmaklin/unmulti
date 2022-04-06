@@ -30,10 +30,10 @@ std::vector<std::pair<uint32_t, std::string>> Split(const std::string &outdir, c
     return seq_names;
 }
 
-void FileToSeq(const std::string &outdir, const std::string &outfile, const std::vector<std::pair<uint32_t, std::string>> &seq_names) {
+void FileToSeq(const std::string &outfile, const std::vector<std::pair<uint32_t, std::string>> &seq_names) {
     cxxio::Out out;
     uint32_t n_seqs = seq_names.size();
-    out.open(outdir + '/' + outfile);
+    out.open(outfile);
     for (uint32_t i = 0; i < n_seqs; ++i) {
 	out << seq_names[i].first << '\t' << seq_names[i].second << (i == n_seqs - 1 ? "" : "\n");
     }

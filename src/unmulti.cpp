@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
     const std::vector<std::pair<uint32_t, std::string>> &seq_names = unmulti::Split(args.value<std::string>('o'), args.value<bool>("compress"), in);
 
     if (unmulti::CmdOptionPresent(argv, argv+argc, "-t")) {
-	unmulti::FileToSeq(args.value<std::string>('o'), args.value<std::string>('t'), seq_names);
+	unmulti::FileToSeq(args.value<std::string>('t'), seq_names);
     }
     return 0;
 }

@@ -57,7 +57,7 @@ files using zlib.
 
 Adding the `-t number_to_sequence.tsv` argument will write a table
 linking the output filenames to their sequence names to the supplied
-argument. In the example above, running `unmulti -f in.fasta -o
+argument. In the example above, running `unmulti -f in.fasta -t
 number_to_sequence.tsv` would produce the following file
 
 ```
@@ -65,8 +65,6 @@ number_to_sequence.tsv` would produce the following file
 1	seq_2
 ```
 
-If the `-o` option is used then the output from `-t` will be in the
-directory supplied via `-o`.
 
 ### Accepted flags/parameters
 unmulti accepts the following flags/parameters:
