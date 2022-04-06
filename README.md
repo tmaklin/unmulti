@@ -1,5 +1,9 @@
-# unmulti - split a multifasta file into many fasta files
-Note: work-in-progress!
+# unmulti - extract individual sequeunces from a fasta file
+unmulti is a tool for splitting fasta files containing several
+sequences into many files containing just one sequence, or for
+extracting a list of sequences from the same file. The tool supports
+input compression in .gz, .bz2, or .xz formats, and output
+compression in .gz format.
 
 ## Installation
 ### Compiling from source
