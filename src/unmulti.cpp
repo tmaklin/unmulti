@@ -36,6 +36,7 @@
 
 #include "version.h"
 #include "split.hpp"
+#include "extract.hpp"
 
 namespace unmulti {
 bool CmdOptionPresent(char **begin, char **end, const std::string &option) {
@@ -48,6 +49,8 @@ void ParseArgs(int argc, char* argv[], cxxargs::Arguments &args) {
     args.add_short_argument<std::string>('t', "Write a table linking the output filenames to sequence names to the argument filename.");
     args.set_not_required('t');
     args.add_long_argument<bool>("compress", "Compress the output files with zlib (default: false)", false);
+    args.add_long_argument<std::vector<std::string>>("extract", "Extract only the named sequence(s). Multiple sequences should be delimited by ','.");
+    args.set_not_required("extract");
 
     if (!CmdOptionPresent(argv, argv+argc, "--help")) {
 	args.parse(argc, argv);
@@ -88,7 +91,13 @@ int main(int argc, char* argv[]) {
 	return 1;
     }
 
-    const std::vector<std::pair<uint32_t, std::string>> &seq_names = unmulti::Split(args.value<std::string>('o'), args.value<bool>("compress"), in);
+    std::vector<std::pair<uint32_t, std::string>> seq_names;
+
+    if (args.is_initialized("extract")) {
+	seq_names = unmulti::Extract(args.value<std::string>('o'), args.value<std::vector<std::string>>("extract"), args.value<bool>("compress"), in);
+    } else {
+	seq_names = unmulti::Split(args.value<std::string>('o'), args.value<bool>("compress"), in);
+    }
 
     if (unmulti::CmdOptionPresent(argv, argv+argc, "-t")) {
 	unmulti::FileToSeq(args.value<std::string>('t'), seq_names);
