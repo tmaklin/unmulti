@@ -6,11 +6,16 @@ input compression in .gz, .bz2, or .xz formats, and output
 compression in .gz format.
 
 ## Installation
+### Prebuilt binaries
+Prebuilt binaries for generix linux_x86-64 are available from the
+[releases page](https://github.com/tmaklin/unmulti/releases).
+
 ### Compiling from source
 #### Requirements
 - c++11 compliant compiler.
 - cmake v2.8.2 or newer.
 - git.
+- zlib
 - Internet access.
 
 ### How-to
