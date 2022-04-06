@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
 
     std::vector<std::pair<uint32_t, std::string>> seq_names;
 
-    if (args.is_initialized("extract")) {
+    if (unmulti::CmdOptionPresent(argv, argv+argc, "--extract")) {
 	seq_names = unmulti::Extract(args.value<std::string>('o'), args.value<std::vector<std::string>>("extract"), args.value<bool>("compress"), in);
     } else {
 	seq_names = unmulti::Split(args.value<std::string>('o'), args.value<bool>("compress"), in);
