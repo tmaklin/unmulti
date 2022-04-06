@@ -27,6 +27,7 @@ unmulti -f <input multifasta> -o <output directory (default: working directory)
 ```
 
 ### Example
+#### Split a multifasta
 Running unmulti on an input file `in.fasta` with the following contents
 
 ```
@@ -50,6 +51,14 @@ and
 GGGTAC
 ```
 
+#### Extract specific sequence(s)
+Running `unmulti -f in.fasta --extract seq_2` on the example input
+above will extract only the sequence starting at `>seq_2`. Multiple
+sequences can be supplied by delimiting them with `,`. Running
+`unmulti -f in.fasta --extract seq_2,seq_1` will extract both
+sequences from the example input.
+
+#### Other options
 The input file can be supplied compressed in the zlib/libbz2/liblzma
 format depending on what was supported on the machine that unmulti was
 compiled on. Adding the `--compress` toggle will compress the output
@@ -74,6 +83,7 @@ unmulti accepts the following flags/parameters:
 -o            Output directory (default: working directory)
 -t            Write a table linking the output filenames to sequence names to the argument filename.
 --compress    Compress the output files with zlib (default: false)
+--extract     Extract only the named sequence(s). Multiple sequences should be delimited by ','.
 ```
 
 ## License
