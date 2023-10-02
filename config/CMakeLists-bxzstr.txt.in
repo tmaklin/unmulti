@@ -8,6 +8,7 @@ ExternalProject_Add(bxzstr-download
   GIT_TAG           master
   SOURCE_DIR        "${CMAKE_CURRENT_BINARY_DIR}/external/bxzstr"
   BUILD_IN_SOURCE   0
+  CMAKE_ARGS        -D ZSTD_FOUND=0
   BUILD_COMMAND	    ""
   INSTALL_COMMAND   ""
   TEST_COMMAND      ""
